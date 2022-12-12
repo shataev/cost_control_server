@@ -2,73 +2,46 @@ const router = require('express').Router();
 const User = require('../models/User');
 const CryptoJS = require('crypto-js');
 const jwt = require('jsonwebtoken');
+const {setRefreshTokenCookie} = require('../middlewares/setRefreshTokenCookie');
+const {createUser} = require("../middlewares/createUser");
+const {setAccessTokenToReq} = require("../middlewares/setAccessTokenToReq");
+const {checkUserInDatabase} = require("../middlewares/checkUserInDatabase");
 
 // SignUp
-router.post('/signup', async (req, res) => {
-  const {
-    username,
-    email,
-    password: rawPassword
-  } = req.body;
-
-  const password = CryptoJS.AES.encrypt(rawPassword, process.env.SECRET_KEY).toString();
-
-  const newUser = new User({
-    username,
-    email,
-    password
-  });
-
-  try {
-    const user = await newUser.save();
-
-    res
-      .status(201)
-      .json(user);
-  } catch (error) {
-    res
-      .status(500)
-      .json(error);
+router.post('/signup', [
+    createUser,
+    setRefreshTokenCookie,
+    setAccessTokenToReq,
+    (req, res) => {
+      res
+          .status(201)
+          .json({
+            ...req.user,
+            accessToken: req.accessToken});
   }
-})
+])
 
 // SignIn
-router.post('/signin', async (req, res) => {
-  const {
-    email,
-    password: passwordFromClient
-  } = req.body;
-
-
-  try {
-    const user = await User.findOne({
-      email,
-    });
-
-    if (!user) {
-      res.status(401).json('Wrong email or password');
+router.post('/signin', [
+    checkUserInDatabase,
+    setRefreshTokenCookie,
+    setAccessTokenToReq,
+    (req, res) => {
+        res
+            .status(201)
+            .json({
+                ...req.user,
+                accessToken: req.accessToken});
     }
+])
 
-    const bytes  = CryptoJS.AES.decrypt(user.password, process.env.SECRET_KEY);
-    const passwordFromDb = bytes.toString(CryptoJS.enc.Utf8);
-
-    if (passwordFromClient !== passwordFromDb) {
-      return res.status(401).json('Wrong email or password');
-    }
-
-    const accessToken = jwt.sign(
-      { id: user._id, email: user.email },
-      process.env.SECRET_KEY,
-      { expiresIn: '5d' }
-    );
-
-    const {password, ...userData} = user._doc;
-    const responseData = {...userData, accessToken};
-
-    res.status(201).json(responseData);
-  } catch (error) {
-    res.status(500).json(error);
-  }
+// Logout
+router.get('/logout', async (req, res) => {
+  // Чистим куки
+  // Отправляем 401
+  res
+      .status(401)
+      .send('Successfully logged out');
 })
 
 module.exports = router;
