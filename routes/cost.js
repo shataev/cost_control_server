@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Cost = require('../models/Cost');
 
+// Get all costs
 router.get('/costs', async (req, res) => {
     try {
         const costs = await Cost.find();
@@ -8,7 +9,7 @@ router.get('/costs', async (req, res) => {
         res
             .status(201)
             .json(costs);
-    } catch (e) {
+    } catch (error) {
         console.log(error)
         res
             .status(500)

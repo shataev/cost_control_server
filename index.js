@@ -18,13 +18,25 @@ mongoose.connect(process.env.MONGO_URL)
 
 const app = express();
 
-app.use(cookieParser())
-app.use(cors());
+// CORS set up
+const ORIGIN = process.env.stage === 'development' ? 'http://127.0.0.1:5173' : true
+
+app.use(cookieParser());
+app.use(cors({
+    // TODO завязать наличие этого параметра на режим сборки
+    origin: ORIGIN,
+    credentials: true
+}));
+
+// Built-in middleware for request body parsing
 app.use(express.json());
 
+// Routes
 app.use('/api/auth', authRoute);
 app.use('/api', costRoute);
 
+
+// Server starting
 app.listen(8800, () => {
     console.log('Server is running ')
 })

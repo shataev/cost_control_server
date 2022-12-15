@@ -1,5 +1,9 @@
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+
+const DEV_COOKIE_PARAMS = process.env.stage === 'development' ? {
+    sameSite: "None",
+    secure: true,
+} : {};
 
 module.exports = {
     setRefreshTokenCookie(req, res, next) {
@@ -14,9 +18,10 @@ module.exports = {
         )
 
         res.cookie('refreshToken', refreshToken, {
-                httpOnly: true,
-                expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-            });
+            httpOnly: true,
+            expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+            ...DEV_COOKIE_PARAMS
+        });
 
         next();
     }
