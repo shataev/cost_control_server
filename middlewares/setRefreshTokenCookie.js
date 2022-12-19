@@ -13,7 +13,7 @@ module.exports = {
             {userId},
             process.env.SECRET_KEY_REFRESH,
             {
-                expiresIn: '1m'
+                expiresIn: '7d'
             }
         )
 
