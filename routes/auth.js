@@ -65,7 +65,7 @@ router.get('/signout', async (req, res) => {
     });
 
     res
-      .status(401)
+      .status(200)
       .send('Successfully logged out');
 })
 
