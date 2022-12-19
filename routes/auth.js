@@ -58,7 +58,10 @@ router.post('/signin', [
 router.get('/signout', async (req, res) => {
     // Clear cookie
     res.cookie('refreshToken', null, {
-        maxAge: 0
+        sameSite: "None",
+        secure: true,
+        httpOnly: true,
+        expires: new Date(Date.now()),
     });
 
     res
