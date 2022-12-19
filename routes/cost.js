@@ -27,9 +27,6 @@ router.post('/cost', async (req, res) => {
         comment,
     } = req.body;
 
-
-    console.log('[/cost] cookies', req.cookies);
-
     const newCost = new Cost({
         amount,
         product,

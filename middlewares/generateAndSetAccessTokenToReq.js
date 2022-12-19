@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 module.exports = {
-    setAccessTokenToReq(req, res, next) {
+    generateAndSetAccessTokenToReq(req, res, next) {
         const user = req.user;
 
         const accessToken = jwt.sign(
