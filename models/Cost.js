@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const {Schema} = require("mongoose");
 
 const CostSchema = new mongoose.Schema(
   {
@@ -14,6 +15,10 @@ const CostSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+    }
   },
   {
     timestamps: true
