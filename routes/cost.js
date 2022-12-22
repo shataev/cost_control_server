@@ -1,12 +1,16 @@
 const router = require('express').Router();
 const Cost = require('../models/Cost');
-const {Schema} = require("mongoose");
 const mongoose = require("mongoose");
+const ObjectId = mongoose.Types.ObjectId;
 
-// Get all costs
+// Get all user's costs
 router.get('/costs', async (req, res) => {
     try {
-        const costs = await Cost.find();
+        const userId = new ObjectId(req.query.userId);
+
+        const costs = await Cost.find({
+            user: userId,
+        });
 
         res
             .status(201)
@@ -34,7 +38,7 @@ router.post('/cost', async (req, res) => {
         amount,
         product,
         comment,
-        user: mongoose.Types.ObjectId(userId)
+        user: new ObjectId(userId)
     });
 
     try {
