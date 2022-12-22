@@ -6,6 +6,8 @@ const costRoute = require('./routes/cost');
 const cors = require('cors');
 const cookieParser = require("cookie-parser");
 
+const PORT = process.env.PORT || 8800;
+
 dotenv.config();
 
 mongoose.connect(process.env.MONGO_URL)
@@ -37,6 +39,6 @@ app.use('/api', costRoute);
 
 
 // Server starting
-app.listen(8800, () => {
-    console.log('Server is running ')
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`)
 })
