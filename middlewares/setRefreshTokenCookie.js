@@ -7,7 +7,7 @@ const DEV_COOKIE_PARAMS = process.env.stage === 'development' ? {
     //TODO: удалить, когда фронт и бек будут на одном домене
     sameSite: "None",
     //TODO: расскомментить, когда фронт будет хоститься на https
-    //secure: true,
+    secure: true,
 };
 
 module.exports = {
