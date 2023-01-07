@@ -3,7 +3,12 @@ const jwt = require("jsonwebtoken");
 const DEV_COOKIE_PARAMS = process.env.stage === 'development' ? {
     sameSite: "None",
     secure: true,
-} : {};
+} : {
+    //TODO: удалить, когда фронт и бек будут на одном домене
+    sameSite: "None",
+    //TODO: расскомментить, когда фронт будет хоститься на https
+    //secure: true,
+};
 
 module.exports = {
     setRefreshTokenCookie(req, res, next) {
