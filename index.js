@@ -23,7 +23,7 @@ const app = express();
 // CORS set up
 //TODO: заменить http://gundrov.com/ на адрес сервера на ВПС
 //const ORIGIN = process.env.stage === 'development' ? 'http://127.0.0.1:5173' : true
-const ORIGIN = process.env.stage === 'development' ? 'http://127.0.0.1:5173' : 'http://gundrov.com/'
+const ORIGIN = process.env.stage === 'development' ? 'http://127.0.0.1:5173' : 'http://gundrov.com'
 
 app.use(cookieParser());
 app.use(cors({
