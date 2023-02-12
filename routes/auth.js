@@ -1,7 +1,4 @@
 const router = require('express').Router();
-const User = require('../models/User');
-const CryptoJS = require('crypto-js');
-const jwt = require('jsonwebtoken');
 const {setRefreshTokenCookie} = require('../middlewares/setRefreshTokenCookie');
 const {createUser} = require("../middlewares/createUser");
 const {generateAndSetAccessTokenToReq} = require("../middlewares/generateAndSetAccessTokenToReq");
@@ -58,8 +55,6 @@ router.post('/signin', [
 router.get('/signout', async (req, res) => {
     // Clear cookie
     res.cookie('refreshToken', null, {
-        sameSite: "None",
-        secure: true,
         httpOnly: true,
         expires: new Date(Date.now()),
     });
