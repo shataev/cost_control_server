@@ -1,7 +1,8 @@
-const jwt = require("jsonwebtoken");
+const {generateRefreshToken, ACCESS_TOKEN_EXPIRATION_TIME_SECONDS, REFRESH_TOKEN_EXPIRATION_TIME_SECONDS} = require("../utils/auth.utils");
 
 const DEV_COOKIE_PARAMS = process.env.stage === 'development' ? {
-    sameSite: "None",
+    sameSite: "none",
+    httpOnly: true,
     secure: true,
 } : {
     //TODO: расскомментить, когда фронт будет хоститься на https
@@ -10,19 +11,13 @@ const DEV_COOKIE_PARAMS = process.env.stage === 'development' ? {
 
 module.exports = {
     setRefreshTokenCookie(req, res, next) {
-        const userId = req.user.id;
+        const userId = req.user?.id || req.userId;
 
-        const refreshToken = jwt.sign(
-            {userId},
-            process.env.SECRET_KEY_REFRESH,
-            {
-                expiresIn: '7d'
-            }
-        )
+        console.log('[setRefreshTokenCookie] userId', userId)
+        const refreshToken = generateRefreshToken(userId);
 
         res.cookie('refreshToken', refreshToken, {
-            httpOnly: true,
-            expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+            expires: new Date(Date.now() + REFRESH_TOKEN_EXPIRATION_TIME_SECONDS * 1000),
             ...DEV_COOKIE_PARAMS
         });
 

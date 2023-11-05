@@ -8,12 +8,40 @@ router.get('/costs', async (req, res) => {
     try {
         const userId = new ObjectId(req.query.userId);
 
-        const costs = await Cost.find({
-            user: userId,
-        });
+        const allCosts = await Cost.find({
+            user: userId
+        })
+
+        const costs = await Cost.aggregate([
+            {
+                $match: {
+                    user: userId,
+                },
+            },
+            {
+                $lookup: {
+                    from: 'categories', // Replace with the actual name of your "themes" collection
+                    localField: 'category', // Field in the "posts" collection
+                    foreignField: '_id', // Field in the "themes" collection
+                    as: 'category', // Create a new field named "theme" with the matching theme document
+                },
+            },
+            {
+                $unwind: '$category', // Unwind the "theme" array created by $lookup
+            },
+            {
+                $group: {
+                    _id: '$category._id',
+                    amount: { $sum: '$amount' },
+                    category: {$first: '$category.name'},
+                    icon: {$first: '$category.icon'},
+                    costs: { $push: '$$ROOT' },
+                }
+            },
+        ]);
 
         res
-            .status(201)
+            .status(200)
             .json(costs);
     } catch (error) {
         console.log(error)
@@ -29,15 +57,17 @@ router.get('/costs', async (req, res) => {
 router.post('/cost', async (req, res) => {
     const {
         amount,
-        product,
+        category,
         comment,
-        userId
+        userId,
+        date
     } = req.body;
 
     const newCost = new Cost({
         amount,
-        product,
+        category: category,
         comment,
+        date,
         user: new ObjectId(userId)
     });
 
