@@ -38,6 +38,11 @@ router.get('/costs', async (req, res) => {
                     costs: { $push: '$$ROOT' },
                 }
             },
+            {
+                $sort: {
+                    amount: -1
+                }
+            }
         ]);
 
         res
