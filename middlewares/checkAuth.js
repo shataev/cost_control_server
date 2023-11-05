@@ -48,8 +48,6 @@ const checkAccessToken = async (req, res, next) => {
             const decoded = jwt.verify(accessToken, process.env.SECRET_KEY);
             const {id} = decoded;
 
-            console.log('[checkAccessToken] id', id)
-
             const user = await getUserFromDatabaseById(id);
 
             if (!user) {

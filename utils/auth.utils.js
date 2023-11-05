@@ -8,7 +8,6 @@ module.exports = {
     ACCESS_TOKEN_EXPIRATION_TIME_SECONDS,
     REFRESH_TOKEN_EXPIRATION_TIME_SECONDS,
     generateAccessToken(user) {
-        console.log('[generateAccessToken] user', user)
         return jwt.sign(
             { ...user },
             process.env.SECRET_KEY,
@@ -18,7 +17,6 @@ module.exports = {
         )
     },
     generateRefreshToken(userId) {
-        console.log('[generateRefreshToken] userId', userId)
         return jwt.sign(
             {userId},
             process.env.SECRET_KEY_REFRESH,

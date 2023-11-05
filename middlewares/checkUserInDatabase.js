@@ -37,8 +37,6 @@ module.exports = {
                 id: user._id
             };
 
-            console.log('[checkUserInDatabase] user', user)
-
             next();
         } catch (error) {
             res.status(500).json(error);
