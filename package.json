@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "serve": "stage=$npm_config_stage nodemon index.js",
-    "serve:dev": "npm run serve --stage=development"
+    "serve:dev": "npm run serve --stage=development",
+    "start": "npm run serve"
   },
   "keywords": [],
   "author": "",
