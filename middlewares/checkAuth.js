@@ -30,7 +30,10 @@ const checkRefreshToken = async (req, res, next) => {
             id: user.id
         })
 
-        req.user = user;
+        req.user = {
+            ...user,
+            accessToken: newAccessToken
+        };
 
         res.setHeader('Authorization', 'Bearer ' + newAccessToken)
         next();
