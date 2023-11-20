@@ -22,7 +22,7 @@ mongoose.connect(process.env.MONGO_URL)
 const app = express();
 
 // CORS set up
-const ORIGIN = process.env.stage === 'development' ? 'http://localhost:5173' : true;
+const ORIGIN = process.env.stage === 'development' ? 'http://localhost:5173' : process.env.CLIENT_URL;
 
 app.use(cookieParser());
 app.use(cors({
