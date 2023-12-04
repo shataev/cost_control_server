@@ -5,6 +5,7 @@ const {setAccessTokenToReq} = require("../middlewares/setAccessTokenToReq");
 const {checkUserInDatabase} = require("../middlewares/checkUserInDatabase");
 const {checkVerificationCodeHeader} = require("../middlewares/checkVerificationCodeHeader");
 const {checkAuth, checkAccessToken} = require("../middlewares/checkAuth");
+const {sendVerificationEmail} = require("../middlewares/sendVerificationEmail");
 
 // Silent Authentication
 router.get('/', [
@@ -23,12 +24,15 @@ router.get('/', [
 router.post('/signup', [
     checkVerificationCodeHeader,
     createUser,
+    sendVerificationEmail,
     setRefreshTokenCookie,
+    setAccessTokenToReq,
     (req, res) => {
       res
           .status(201)
           .json({
             ...req.user,
+            verificationEmailSendingStatus: req.verificationEmailSendingStatus,
             accessToken: req.accessToken});
   }
 ])
