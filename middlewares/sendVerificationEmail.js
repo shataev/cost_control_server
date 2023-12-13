@@ -17,7 +17,7 @@ const getTransporter = () => {
 
 const getVerificationStringByUserId = (userId) => `${userId}${v4()}`
 
-const getVerificationLinkByVerificationString = (verificationString) => `${process.env.CLIENT_URL}/email-verification/${verificationString}`
+const getVerificationLinkByVerificationString = (userId, verificationString) => `${process.env.BASE_URL}/api/verify/${userId}/${verificationString}`
 
 const getEmailConfig = (email, verificationLink) => ({
     form: process.env.AUTH_VERIFICATION_EMAIL,
@@ -48,7 +48,7 @@ module.exports = {
         const transporter = getTransporter();
 
         const verificationString = getVerificationStringByUserId(user.id)
-        const verificationLink = getVerificationLinkByVerificationString(verificationString)
+        const verificationLink = getVerificationLinkByVerificationString(user.id, verificationString)
 
         const emailConfig = getEmailConfig(user.email, verificationLink)
 
@@ -63,7 +63,9 @@ module.exports = {
 
         if (verification) {
             try {
-                await sendVerificationEmailAsync(transporter, emailConfig);
+                // TODO: uncomment after testing email confirmation endpoint
+                //await sendVerificationEmailAsync(transporter, emailConfig);
+                req.verificationLink = verificationLink;
 
                 req.verificationEmailSendingStatus = 'success'
             } catch (e) {

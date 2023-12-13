@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const authRoute = require('./routes/auth');
 const costRoute = require('./routes/cost');
+const verifyRoute = require('./routes/verify');
 const categoryRoute = require('./routes/category');
 const cors = require('cors');
 const cookieParser = require("cookie-parser");
@@ -40,6 +41,7 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', authRoute);
 app.use('/api', [costRoute, categoryRoute]);
+app.use('/api/verify', verifyRoute);
 
 
 // Server starting

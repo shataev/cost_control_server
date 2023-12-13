@@ -33,6 +33,8 @@ router.post('/signup', [
           .json({
             ...req.user,
             verificationEmailSendingStatus: req.verificationEmailSendingStatus,
+            // TODO: delete after testing email confirmation endpoint
+            verificationEmailLink: req.verificationLink,
             accessToken: req.accessToken});
   }
 ])
