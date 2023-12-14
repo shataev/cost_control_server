@@ -6,6 +6,11 @@ const {getVerificationByUserId, checkVerificationExpiration, removeVerificationB
 const router = require('express').Router();
 const User = require('../models/User');
 const CryptoJS = require("crypto-js");
+const {checkVerificationCodeHeader} = require("../middlewares/checkVerificationCodeHeader");
+const {checkUserInDatabaseById} = require("../middlewares/checkUserInDatabaseById");
+const {checkIsUserVerified} = require("../middlewares/checkIsUserVerified");
+const {deleteVerificationFromDatabase} = require("../middlewares/deleteVerificationFromDatabase");
+const {sendVerificationEmail} = require("../middlewares/sendVerificationEmail");
 
 /**
  * Route for verification email address
@@ -72,12 +77,24 @@ router.get('/:userId/:verificationString', async(req, res) => {
  * - remove previous item from Verification table
  * - create a new item in Verification table
  */
-router.post('/email', async (req, res) => {
-    console.log(req.body);
+router.post('/email', [
+    checkVerificationCodeHeader,
+    checkUserInDatabaseById,
+    checkIsUserVerified,
+    deleteVerificationFromDatabase,
+    sendVerificationEmail,
+    (req, res) => {
 
-    res
-        .status(200)
-        .json(req.body)
-})
+    if (req.verificationEmailSendingStatus === 'success') {
+        res
+            .status(200)
+            .json('Email verification sent. Check your email');
+    } else {
+        res
+            .status(500)
+            .json('Something went wrong during generation or sending new verification email');
+    }
+
+}])
 
 module.exports = router;

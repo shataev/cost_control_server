@@ -63,8 +63,7 @@ module.exports = {
 
         if (verification) {
             try {
-                // TODO: uncomment after testing email confirmation endpoint
-                //await sendVerificationEmailAsync(transporter, emailConfig);
+                await sendVerificationEmailAsync(transporter, emailConfig);
                 req.verificationLink = verificationLink;
 
                 req.verificationEmailSendingStatus = 'success'
