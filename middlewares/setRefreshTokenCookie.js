@@ -3,10 +3,10 @@ const {generateRefreshToken, ACCESS_TOKEN_EXPIRATION_TIME_SECONDS, REFRESH_TOKEN
 const DEV_COOKIE_PARAMS = process.env.stage === 'development' ? {
     sameSite: "none",
     httpOnly: true,
-    secure: true,
+    secure: false,
 } : {
-    //TODO: расскомментить, когда фронт будет хоститься на https
-    //secure: true,
+    httpOnly: true,
+    secure: true,
 };
 
 module.exports = {
