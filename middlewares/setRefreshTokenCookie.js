@@ -1,9 +1,9 @@
-const {generateRefreshToken, ACCESS_TOKEN_EXPIRATION_TIME_SECONDS, REFRESH_TOKEN_EXPIRATION_TIME_SECONDS} = require("../utils/auth.utils");
+const {generateRefreshToken, REFRESH_TOKEN_EXPIRATION_TIME_SECONDS} = require("../utils/auth.utils");
 
 const DEV_COOKIE_PARAMS = process.env.stage === 'development' ? {
     sameSite: "none",
     httpOnly: true,
-    secure: false,
+    secure: true,
 } : {
     httpOnly: true,
     secure: true,
