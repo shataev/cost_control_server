@@ -7,15 +7,31 @@ const ObjectId = mongoose.Types.ObjectId;
 router.get('/costs', async (req, res) => {
     try {
         const userId = new ObjectId(req.query.userId);
+        const {dateFrom, dateTo} = req.query;
 
         const allCosts = await Cost.find({
-            user: userId
+            user: userId,
+            createdAt: {
+                $gte: dateFrom,
+                $lt: dateTo
+            }
         })
 
         const costs = await Cost.aggregate([
             {
                 $match: {
-                    user: userId,
+                    $and: [
+                        {
+                            user: userId,
+                        },
+                        {
+                            createdAt: {
+                                $gte: new Date(dateFrom),
+                                $lt: new Date(dateTo)
+                            }
+                        }
+                    ]
+
                 },
             },
             {
