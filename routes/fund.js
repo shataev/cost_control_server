@@ -14,7 +14,7 @@ router.get('/funds', async (req, res) => {
         })
 
         res
-            .status(201)
+            .status(200)
             .json(funds);
     } catch (error) {
         console.log(error)
@@ -140,15 +140,42 @@ router.post('/funds/transfer', async (req, res) => {
     }
 });
 
-// Get all transactions for a fund
-router.get('/funds/:id/transactions', async (req, res) => {
-    const { id } = req.params;
+// GET /api/funds/:id
+router.get('/funds/:id', async (req, res) => {
+    const {id} = req.params;
+    const userId = new ObjectId(req.query.userId);
 
     try {
-        const transactions = await FundTransaction.find({ fundId: id });
+        const fund = await Fund.findOne({_id: id, userId});
+        if (!fund) {
+            return res.status(404).json({error: 'Fund is not found'});
+        }
+
+        res.json({
+            id: fund._id,
+            name: fund.name,
+            icon: fund.icon,
+            description: fund.description,
+            initialBalance: fund.initialBalance,
+            currentBalance: fund.currentBalance,
+            createdAt: fund.createdAt,
+            updatedAt: fund.updatedAt,
+        });
+    } catch (error) {
+        console.error('Get fund error:', error);
+        res.status(500).json({error: error.message});
+    }
+});
+
+// Get all transactions for a fund
+router.get('/funds/:id/transactions', async (req, res) => {
+    const {id} = req.params;
+
+    try {
+        const transactions = await FundTransaction.find({fundId: id});
         res.status(200).json(transactions);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({error: error.message});
     }
 });
 
