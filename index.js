@@ -7,6 +7,8 @@ const verifyRoute = require('./routes/verify');
 const categoryRoute = require('./routes/category');
 const cors = require('cors');
 const cookieParser = require("cookie-parser");
+const {Telegraf} = require("telegraf");
+const {initBot} = require("./telagramBot");
 
 const PORT = process.env.PORT || 8800;
 
@@ -43,6 +45,8 @@ app.use('/api/auth', authRoute);
 app.use('/api', [costRoute, categoryRoute]);
 app.use('/api/verify', verifyRoute);
 
+// Telegram bot
+initBot();
 
 // Server starting
 app.listen(PORT, () => {
