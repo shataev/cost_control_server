@@ -19,6 +19,10 @@ const UserSchema = new mongoose.Schema(
     verified: {
       type: Boolean,
       default: false
+    },
+    telegramId: {
+      type: String,
+      required: false,
     }
   },
   {
