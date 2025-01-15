@@ -6,6 +6,7 @@ const ObjectId = mongoose.Types.ObjectId;
 const botState = require('./state');
 const Category = require("../models/Category");
 const Cost = require("../models/Cost");
+const onPhoto = require("./handlers/onPhoto");
 
 
 const initBot = function () {
@@ -44,6 +45,8 @@ const initBot = function () {
             }
         });
     });
+
+    bot.on('photo', onPhoto);
 
     bot.on(message('text'), async (ctx) => {
         const state = botState.getState(ctx.from.id);
