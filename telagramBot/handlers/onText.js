@@ -61,9 +61,6 @@ const onText = async (ctx) => {
             });
 
             await showConfirmationMessage(ctx);
-
-
-            console.log(botState.getState(ctx.from.id))
         }
     }
 }

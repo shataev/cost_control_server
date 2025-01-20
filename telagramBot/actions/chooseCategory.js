@@ -12,11 +12,6 @@ module.exports = {
         const name = ctx.match[2]; // Category Name
         const state = botState.getState(ctx.from.id);
 
-        state.data.category = {
-            id,
-            name
-        }
-
         botState.setState(ctx.from.id, {
             ...state,
             data: {
