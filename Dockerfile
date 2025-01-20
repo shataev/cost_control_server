@@ -6,6 +6,9 @@ ARG VERIFICATION_CODE=${VERIFICATION_CODE}
 ARG CLIENT_URL=${CLIENT_URL}
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
+
+RUN npm install -g pm2
+
 COPY ./package.json /usr/src/app/
 RUN npm install && npm cache clean --force
 COPY ./ /usr/src/app
