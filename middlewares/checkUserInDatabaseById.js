@@ -2,7 +2,7 @@ const User = require("../models/User");
 
 module.exports = {
     async checkUserInDatabaseById(req, res, next) {
-        const userId = req.userId;
+        const {userId} = req.body;
 
         try {
             const user = await User.findOne({
@@ -10,16 +10,11 @@ module.exports = {
             });
 
             if (!user) {
-                return res.status(401).send('Incorrect userId');
+                return res.status(400).send(`User with id ${userId} not found`);
             }
 
-            const {username, email} = user;
-
-            req.user = {
-                email,
-                username,
-                id: userId
-            }
+            req.user = {...user};
+            req.userId = user._id;
 
             next();
         } catch (error) {

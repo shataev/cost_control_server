@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "serve": "stage=$npm_config_stage nodemon index.js",
-    "serve:dev": "npm run serve --stage=development"
+    "serve:dev": "npm run serve --stage=development",
+    "start": "pm2 start index.js --name wanna-track-server"
   },
   "keywords": [],
   "author": "",
@@ -15,9 +16,16 @@
     "cors": "^2.8.5",
     "crypto-js": "^4.1.1",
     "dotenv": "^16.0.3",
-    "express": "^4.18.2",
-    "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.7.2",
-    "nodemon": "^2.0.20"
-  }
+    "express": "^5.0.1",
+    "jsonwebtoken": "9.0.0",
+    "mongoose": "8.9.5",
+    "nodemailer": "6.9.9",
+    "nodemon": "^3.1.9",
+    "pm2": "^5.4.3",
+    "sharp": "^0.33.5",
+    "telegraf": "^4.16.3",
+    "tesseract.js": "^6.0.0",
+    "uuid": "^9.0.1"
+  },
+  "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
 }

@@ -7,17 +7,22 @@ const CostSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    product: {
-      type: String,
-      required: true,
+    category: {
+        type: Schema.Types.ObjectId,
+        ref: "Category",
+        required: true,
+    },
+    date: {
+      type: Date,
+      required: true
     },
     comment: {
       type: String,
-      required: true,
     },
     user: {
         type: Schema.Types.ObjectId,
-        ref: "User"
+        ref: "User",
+        required: true,
     }
   },
   {

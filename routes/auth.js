@@ -1,50 +1,52 @@
 const router = require('express').Router();
 const {setRefreshTokenCookie} = require('../middlewares/setRefreshTokenCookie');
 const {createUser} = require("../middlewares/createUser");
-const {generateAndSetAccessTokenToReq} = require("../middlewares/generateAndSetAccessTokenToReq");
+const {setAccessTokenToReq} = require("../middlewares/setAccessTokenToReq");
 const {checkUserInDatabase} = require("../middlewares/checkUserInDatabase");
 const {checkVerificationCodeHeader} = require("../middlewares/checkVerificationCodeHeader");
-const {checkRefreshToken} = require("../middlewares/checkRefreshToken");
-const {checkUserInDatabaseById} = require("../middlewares/checkUserInDatabaseById");
+const {checkAuth, checkAccessToken} = require("../middlewares/checkAuth");
+const {sendVerificationEmail} = require("../middlewares/sendVerificationEmail");
 
 // Silent Authentication
 router.get('/', [
     checkVerificationCodeHeader,
-    checkRefreshToken,
-    checkUserInDatabaseById,
-    generateAndSetAccessTokenToReq,
+    checkAccessToken,
+    setRefreshTokenCookie,
     (req, res) => {
         res
             .status(201)
             .json({
                 ...req.user,
                 accessToken: req.accessToken});
-
-
-
 }])
 
 // SignUp
 router.post('/signup', [
+    checkVerificationCodeHeader,
     createUser,
+    sendVerificationEmail,
     setRefreshTokenCookie,
-    generateAndSetAccessTokenToReq,
+    setAccessTokenToReq,
     (req, res) => {
       res
           .status(201)
           .json({
             ...req.user,
+            verificationEmailSendingStatus: req.verificationEmailSendingStatus,
+            // TODO: delete after testing email confirmation endpoint
+            verificationEmailLink: req.verificationLink,
             accessToken: req.accessToken});
   }
 ])
 
 // SignIn
 router.post('/signin', [
+    checkVerificationCodeHeader,
     checkUserInDatabase,
     setRefreshTokenCookie,
-    generateAndSetAccessTokenToReq,
+    setAccessTokenToReq,
     (req, res) => {
-        res.status(201)
+        res.status(200)
             .json({
                 ...req.user,
                 accessToken: req.accessToken});
@@ -52,7 +54,7 @@ router.post('/signin', [
 ])
 
 // SignOut
-router.get('/signout', async (req, res) => {
+router.post('/signout', async (req, res) => {
     // Clear cookie
     res.cookie('refreshToken', null, {
         httpOnly: true,

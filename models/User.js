@@ -16,6 +16,14 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    verified: {
+      type: Boolean,
+      default: false
+    },
+    telegramId: {
+      type: String,
+      required: false,
+    }
   },
   {
     timestamps: true
@@ -23,4 +31,3 @@ const UserSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model('User', UserSchema);
-
