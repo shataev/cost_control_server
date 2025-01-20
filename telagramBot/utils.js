@@ -1,7 +1,6 @@
 const sharp = require('sharp');
 const Tesseract = require('tesseract.js');
 const botState = require("./state");
-const User = require("../models/User");
 
 const getStateByTelegramId = async (telegramId) => botState.getState(telegramId) || null;
 
@@ -22,7 +21,7 @@ const preprocessImage = async (inputBuffer) => {
 const extractTextFromImage = async (buffer) => {
     try {
         const result = await Tesseract.recognize(buffer, 'eng', {
-            logger: (info) => console.log(info), // Лог прогресса
+            logger: (info) => console.log(info),
         });
         return result.data.text;
     } catch (error) {
