@@ -1,17 +1,11 @@
 const {Telegraf, Markup} = require("telegraf");
-const User = require("../models/User");
-const mongoose = require("mongoose");
 const {message} = require("telegraf/filters");
-const ObjectId = mongoose.Types.ObjectId;
 const botState = require('./state');
-const Category = require("../models/Category");
-const Cost = require("../models/Cost");
 const onPhoto = require("./handlers/onPhoto");
 const onText = require("./handlers/onText");
 const {chooseCategory} = require("./actions/chooseCategory");
 const {skipComment} = require("./actions/skipComment");
 const {saveExpense} = require("./actions/saveExpense");
-const {showConfirmationMessage} = require("./utils/showConfirmationMessage");
 const {chooseCurrentDate} = require("./actions/chooseCurrentDate");
 const {useAmountFromPhoto} = require("./actions/useAmountFromPhoto");
 
