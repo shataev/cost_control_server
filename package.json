@@ -6,7 +6,7 @@
   "scripts": {
     "serve": "stage=$npm_config_stage nodemon index.js",
     "serve:dev": "npm run serve --stage=development",
-    "start": "pm2 start index.js --name wanna-track-server"
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",
