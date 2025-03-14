@@ -65,6 +65,8 @@ router.put('/funds/:id', async (req, res) => {
     const {name, description, currentBalance, icon} = req.body;
 
     try {
+        const oldFund = await Fund.findById(id);
+
         const fund = await Fund.findByIdAndUpdate(
             id,
             {name, description, currentBalance, icon},
@@ -80,7 +82,7 @@ router.put('/funds/:id', async (req, res) => {
             userId: fund.userId,
             fundId: fund.id,
             type: 'adjustment',
-            amount: currentBalance - fund.currentBalance,
+            amount: fund.currentBalance - oldFund.currentBalance,
             description: 'Manual adjustment',
         });
         await adjustment.save();
@@ -143,10 +145,9 @@ router.post('/funds/transfer', async (req, res) => {
 // GET /api/funds/:id
 router.get('/funds/:id', async (req, res) => {
     const {id} = req.params;
-    const userId = new ObjectId(req.query.userId);
 
     try {
-        const fund = await Fund.findOne({_id: id, userId});
+        const fund = await Fund.findById(id);
         if (!fund) {
             return res.status(404).json({error: 'Fund is not found'});
         }

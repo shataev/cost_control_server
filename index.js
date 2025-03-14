@@ -9,7 +9,7 @@ const fundsRoute = require('./routes/fund');
 const cors = require('cors');
 const cookieParser = require("cookie-parser");
 
-const PORT = process.env.PORT || 8900;
+const PORT = process.env.PORT || 8800;
 
 dotenv.config();
 
