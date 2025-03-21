@@ -5,6 +5,7 @@ const authRoute = require('./routes/auth');
 const costRoute = require('./routes/cost');
 const verifyRoute = require('./routes/verify');
 const categoryRoute = require('./routes/category');
+const fundsRoute = require('./routes/fund');
 const cors = require('cors');
 const cookieParser = require("cookie-parser");
 const {Telegraf} = require("telegraf");
@@ -30,7 +31,7 @@ const ORIGIN = process.env.stage === 'development' ? 'http://localhost:5173' : p
 app.use(cookieParser());
 app.use(cors({
     origin: ORIGIN,
-    methods: ['GET', 'PUT', 'POST'],
+    methods: ['GET', 'PUT', 'POST', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization', 'x-csrf-token', 'x-verification-code'],
     credentials: true,
     maxAge: 600,
@@ -42,7 +43,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/auth', authRoute);
-app.use('/api', [costRoute, categoryRoute]);
+app.use('/api', [costRoute, categoryRoute, fundsRoute]);
 app.use('/api/verify', verifyRoute);
 
 // Telegram bot
