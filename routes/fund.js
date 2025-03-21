@@ -93,6 +93,25 @@ router.put('/funds/:id', async (req, res) => {
     }
 });
 
+// Delete fund
+router.delete('/funds/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const fund = await Fund.findByIdAndDelete(id);
+
+        if (!fund) {
+            return res.status(404).json({ error: 'Fund not found' });
+        }
+
+        await FundTransaction.deleteMany({ fundId: id });
+
+        res.status(200).json({ message: 'Fund deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // Transfer funds between two funds
 router.post('/funds/transfer', async (req, res) => {
     const {userId, fromFundId, toFundId, amount, description} = req.body;

@@ -29,7 +29,7 @@ const ORIGIN = process.env.stage === 'development' ? 'http://localhost:5173' : p
 app.use(cookieParser());
 app.use(cors({
     origin: ORIGIN,
-    methods: ['GET', 'PUT', 'POST'],
+    methods: ['GET', 'PUT', 'POST', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization', 'x-csrf-token', 'x-verification-code'],
     credentials: true,
     maxAge: 600,
