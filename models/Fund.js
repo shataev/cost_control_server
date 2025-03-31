@@ -18,6 +18,7 @@ const FundSchema = new mongoose.Schema(
     description: { type: String, default: '' },
     initialBalance: { type: Number, required: true },
     currentBalance: { type: Number, required: true },
+    isDefault: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
   },
