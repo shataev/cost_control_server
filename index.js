@@ -11,7 +11,7 @@ const cookieParser = require("cookie-parser");
 const {Telegraf} = require("telegraf");
 const {initBot} = require("./telagramBot");
 
-const PORT = process.env.PORT || 8800;
+const PORT = process.env.PORT || 8900;
 
 dotenv.config();
 

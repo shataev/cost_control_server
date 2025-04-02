@@ -33,7 +33,8 @@ router.post('/funds', async (req, res) => {
         icon,
         userId,
         description,
-        initialBalance
+        initialBalance,
+        isDefault
     } = req.body;
 
     try {
@@ -43,6 +44,7 @@ router.post('/funds', async (req, res) => {
             description,
             initialBalance,
             currentBalance: initialBalance,
+            isDefault,
             userId: userId ? new ObjectId(userId) : null
         });
 
@@ -62,14 +64,14 @@ router.post('/funds', async (req, res) => {
 // Update fund
 router.put('/funds/:id', async (req, res) => {
     const {id} = req.params;
-    const {name, description, currentBalance, icon} = req.body;
+    const {name, description, currentBalance, icon, isDefault} = req.body;
 
     try {
         const oldFund = await Fund.findById(id);
 
         const fund = await Fund.findByIdAndUpdate(
             id,
-            {name, description, currentBalance, icon},
+            {name, description, currentBalance, icon, isDefault},
             {new: true}
         );
 
@@ -180,6 +182,7 @@ router.get('/funds/:id', async (req, res) => {
             currentBalance: fund.currentBalance,
             createdAt: fund.createdAt,
             updatedAt: fund.updatedAt,
+            isDefault: fund.isDefault,
         });
     } catch (error) {
         console.error('Get fund error:', error);

@@ -2,6 +2,8 @@ const router = require('express').Router();
 const Cost = require('../models/Cost');
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
+const Fund = require('../models/Fund');
+const FundTransaction = require('../models/FundTransaction');
 
 // Get all user's costs
 router.get('/costs', async (req, res) => {
@@ -43,7 +45,21 @@ router.get('/costs', async (req, res) => {
                 },
             },
             {
-                $unwind: '$category', // Unwind the "theme" array created by $lookup
+                $unwind: '$category', // Unwind the "category" array created by $lookup
+            },
+            {
+                $lookup: {
+                    from: 'funds',
+                    localField: 'fund',
+                    foreignField: '_id',
+                    as: 'fund'
+                }
+            },
+            {
+                $unwind: {
+                    path: '$fund',
+                    preserveNullAndEmptyArrays: true // Если у расхода нет фонда, оставляем null
+                }
             },
             {
                 $group: {
@@ -81,19 +97,49 @@ router.post('/cost', async (req, res) => {
         category,
         comment,
         userId,
-        date
+        date,
+        fundId
     } = req.body;
 
-    const newCost = new Cost({
-        amount,
-        category: category,
-        comment,
-        date,
-        user: new ObjectId(userId)
-    });
-
     try {
+        // Create new cost
+        const newCost = new Cost({
+            amount,
+            category: category,
+            comment,
+            date,
+            user: new ObjectId(userId),
+            fund: fundId ? new ObjectId(fundId) : null
+        });
+
         const cost = await newCost.save();
+
+        // If fund is provided, update fund balance
+        if (fundId) {
+            const fund = await Fund.findById(fundId);
+            
+            if (!fund) {
+                return res.status(404).json({ error: 'Fund not found' });
+            }
+
+            if (fund.currentBalance < amount) {
+                return res.status(400).json({ error: 'Insufficient funds' });
+            }
+
+            // Update fund balance
+            fund.currentBalance -= amount;
+            await fund.save();
+
+            // Create fund transaction record
+            const fundTransaction = new FundTransaction({
+                userId: new ObjectId(userId),
+                fundId: new ObjectId(fund),
+                type: 'expense',
+                amount: -amount,
+                description: comment || 'Cost payment'
+            });
+            await fundTransaction.save();
+        }
 
         res
             .status(201)
