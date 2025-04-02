@@ -33,7 +33,8 @@ router.post('/funds', async (req, res) => {
         icon,
         userId,
         description,
-        initialBalance
+        initialBalance,
+        isDefault
     } = req.body;
 
     try {
@@ -43,6 +44,7 @@ router.post('/funds', async (req, res) => {
             description,
             initialBalance,
             currentBalance: initialBalance,
+            isDefault,
             userId: userId ? new ObjectId(userId) : null
         });
 
