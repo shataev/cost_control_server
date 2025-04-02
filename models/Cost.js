@@ -12,7 +12,7 @@ const CostSchema = new mongoose.Schema(
             ref: "Category",
             required: true,
         },
-        fundId: {
+        fund: {
             type: Schema.Types.ObjectId,
             ref: 'Fund',
             default: null
