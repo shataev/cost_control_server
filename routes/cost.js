@@ -112,8 +112,6 @@ router.post('/cost', async (req, res) => {
             fund: fundId ? new ObjectId(fundId) : null
         });
 
-        const cost = await newCost.save();
-
         // If fund is provided, update fund balance
         if (fundId) {
             const fund = await Fund.findById(fundId);
@@ -140,6 +138,8 @@ router.post('/cost', async (req, res) => {
             });
             await fundTransaction.save();
         }
+
+        const cost = await newCost.save();
 
         res
             .status(201)
