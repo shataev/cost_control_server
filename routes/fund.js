@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Fund = require('../models/Fund');
 const FundTransaction = require('../models/FundTransaction');
+const {checkAccessToken} = require('../middlewares/checkAuth');
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -115,53 +116,67 @@ router.delete('/funds/:id', async (req, res) => {
 });
 
 // Transfer funds between two funds
-router.post('/funds/transfer', async (req, res) => {
-    const {userId, fromFundId, toFundId, amount, description} = req.body;
+router.post('/funds/transfer', 
+    [
+        checkAccessToken,
+        async (req, res) => {
+            const {fromFundId, toFundId, amount, description} = req.body;
+            const userId = req.user.id;
 
-    try {
-        if (fromFundId === toFundId) {
-            return res.status(400).json({error: 'Funds must be different'});
+            try {
+                if (fromFundId === toFundId) {
+                    return res.status(400).json({error: 'Funds must be different'});
+                }
+
+                // Find both funds and check ownership in a single query
+                const funds = await Fund.find({
+                    _id: { $in: [fromFundId, toFundId] },
+                    userId
+                });
+
+                if (funds.length !== 2) {
+                    return res.status(404).json({error: 'One or both funds not found or you don\'t have access to them'});
+                }
+
+                const fromFund = funds.find(fund => fund._id.toString() === fromFundId);
+                const toFund = funds.find(fund => fund._id.toString() === toFundId);
+
+                if (fromFund.currentBalance < amount) {
+                    return res.status(400).json({error: 'Insufficient amount of money in source fund'});
+                }
+
+                //return res.status(200).json({message: `fromFund: ${fromFund}, toFund: ${toFund}`})
+
+                // Create Transactions for each funds
+                const outgoingTransaction = new FundTransaction({
+                    userId,
+                    fundId: fromFundId,
+                    type: 'transfer-out',
+                    amount: -amount,
+                    description,
+                });
+                await outgoingTransaction.save();
+
+                const incomingTransaction = new FundTransaction({
+                    userId,
+                    fundId: toFundId,
+                    type: 'transfer-in',
+                    amount,
+                    description,
+                });
+                await incomingTransaction.save();
+
+                // Update funds
+                await Fund.findByIdAndUpdate(fromFundId, {$inc: {currentBalance: -amount}});
+                await Fund.findByIdAndUpdate(toFundId, {$inc: {currentBalance: amount}});
+
+                res.status(200).json("Transferred successfully!");
+            } catch (error) {
+                res.status(500).json({error: error.message});
+            }
         }
-
-        const fromFund = await Fund.findById(fromFundId);
-        const toFund = await Fund.findById(toFundId);
-
-        if (!fromFund || !toFund) {
-            return res.status(404).json({error: 'One of the founds is not found'});
-        }
-
-        if (fromFund.currentBalance < amount) {
-            return res.status(400).json({error: 'Insufficient amount of money in source fund'});
-        }
-
-        // Create Transactions for each funds
-        const outgoingTransaction = new FundTransaction({
-            userId,
-            fundId: fromFundId,
-            type: 'transfer-out',
-            amount: -amount,
-            description,
-        });
-        await outgoingTransaction.save();
-
-        const incomingTransaction = new FundTransaction({
-            userId,
-            fundId: toFundId,
-            type: 'transfer-in',
-            amount,
-            description,
-        });
-        await incomingTransaction.save();
-
-        // Update funds
-        await Fund.findByIdAndUpdate(fromFundId, {$inc: {currentBalance: -amount}});
-        await Fund.findByIdAndUpdate(toFundId, {$inc: {currentBalance: amount}});
-
-        res.status(200).json("Transferred successfully!");
-    } catch (error) {
-        res.status(500).json({error: error.message});
-    }
-});
+    ]
+);
 
 // GET /api/funds/:id
 router.get('/funds/:id', async (req, res) => {
