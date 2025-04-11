@@ -61,7 +61,9 @@ const checkAccessToken = async (req, res, next) => {
 
             next();
         } else {
-            throw new Error('Unauthorized: no accessToken');
+            console.log('Unauthorized: no accessToken');
+            
+            return await checkRefreshToken(req, res, next)
         }
     } catch (error) {
         console.log('[checkAccessToken] error', error);

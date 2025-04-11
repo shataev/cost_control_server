@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
-const ACCESS_TOKEN_EXPIRATION_TIME_SECONDS = 1 * 60
+const ACCESS_TOKEN_EXPIRATION_TIME_SECONDS = 15 * 60
 const REFRESH_TOKEN_EXPIRATION_TIME_SECONDS = 2 * 60 * 60
 
 module.exports = {
